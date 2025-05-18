@@ -1,0 +1,64 @@
+name: CI Pipeline (Session 2)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ session2 ]
+
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+        
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python3-venv
+        
+    - name: Install Python dependencies
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install --upgrade pip
+        pip install -r requirements.txt
+
+        # Install testing and linting dependencies
+        pip install pytest httpx  # for unit tests
+        pip install black  # for code formatting
+        pip install bandit  # for security analysis
+        pip install pip-audit  # for dependency vulnerabilities
+        pip install detect-secrets  # for secrets scanning
+        
+    - name: Run tests
+      run: |
+        source venv/bin/activate
+        chmod +x run_tests.sh
+        ./run_tests.sh
+        
+    - name: Verify application starts
+      run: |
+        source venv/bin/activate
+        echo "Verifying application can start..."
+        uvicorn main:app --host 127.0.0.1 --port 8000 --no-access-log &
+        APP_PID=$!
+        
+        # Wait for the application to start
+        sleep 5
+        
+        # Check if the application is running
+        if ps -p $APP_PID > /dev/null; then
+            echo "Application started successfully"
+            # Kill the application
+            kill $APP_PID
+        else
+            echo "Application failed to start"
+            exit 1 
+        fi
