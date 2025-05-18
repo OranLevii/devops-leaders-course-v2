@@ -27,6 +27,8 @@ jobs:
       run: |
         python -m venv venv
         source venv/bin/activate
+        pip install --upgrade pip
+        pip install -r requirements.txt
 
         # Install testing and linting dependencies
         pip install pytest httpx  # for unit tests
@@ -41,8 +43,21 @@ jobs:
         chmod +x run_tests.sh
         ./run_tests.sh
         
-    - name: Build and verify
+    - name: Verify application starts
       run: |
         source venv/bin/activate
-        chmod +x build.sh
-        ./build.sh 
+        echo "Verifying application can start..."
+        uvicorn main:app --host 127.0.0.1 --port 8000 --no-access-log &
+        APP_PID=$!
+        
+        # Wait for the application to start
+        sleep 5
+        
+        # Check if the application is running
+        if ps -p $APP_PID > /dev/null; then
+            echo "Application started successfully"
+            # Kill the application
+            kill $APP_PID
+        else
+            echo "Application failed to start"
+            exit 1 
