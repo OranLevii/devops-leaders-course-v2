@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI Pipeline (Session 2)
 
 on:
   workflow_dispatch:
