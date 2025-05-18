@@ -2,6 +2,9 @@ name: CI Pipeline
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ session2 ]
+
 
 jobs:
   test-and-build:
