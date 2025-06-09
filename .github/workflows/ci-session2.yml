@@ -40,7 +40,7 @@ jobs:
     
     - name: Install dependencies for security checks
       run: |
-        pip install black bandit pip-audit pytest
+        pip install black bandit pip-audit
 
     - name: Check Formatting (black)
       run: black --check .
