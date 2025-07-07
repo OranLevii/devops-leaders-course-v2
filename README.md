@@ -12,7 +12,7 @@ The Project was built with the assistance of OpenAI o3-mini-high model.
 
 ## Getting Started
 
-### Prerequisitess
+### Prerequisites
 
 - Python 3.8 or higher
 

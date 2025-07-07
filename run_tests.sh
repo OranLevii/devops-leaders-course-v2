@@ -11,7 +11,7 @@ echo " Running full test suite"
 echo "============================"
 
 echo
-echo "--- Unit Tests ---"
+echo "--- Unit Testing ---"
 pytest -v
 rc=$?
 results["Unit Tests"]=$rc
