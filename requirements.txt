@@ -3,3 +3,10 @@ uvicorn
 requests
 jinja2
 python-dotenv
+pytest
+black
+dotenv
+httpx
+bandit
+pip-audit
+setuptools

@@ -1,0 +1,57 @@
+name: Code Check and Test
+
+on:
+  workflow_dispatch:  # 👈 Manual run
+  push:               # Run on push to main
+    branches: [ "**" ]
+
+jobs:
+  lint-format-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv 
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Check formatting with Black
+        run: source venv/bin/activate && black --check .
+
+      - name: Run tests with pytest
+        run: source venv/bin/activate && pytest test_main.py
+
+      - name: Bandit (static vuln scan)
+        run: source venv/bin/activate && bandit -r src -lll
+      
+      - name: Start and test FastAPI server
+        run: |
+          set -e
+
+          source venv/bin/activate
+
+          uvicorn main:app --host 127.0.0.1 --port 8000 --no-access-log &
+          SERVER_PID=$!
+
+          sleep 3
+
+          curl --fail http://127.0.0.1:8000 || (echo "❌ Server did not respond" && kill $SERVER_PID && exit 1)
+
+          kill $SERVER_PID
+
+      - name: pip-audit for requirements.txt
+        run: |
+          source venv/bin/activate
+          pip install pip-audit
+          pip install gitpython --upgrade
+          pip-audit -r requirements.txt

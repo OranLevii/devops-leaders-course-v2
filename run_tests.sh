@@ -12,6 +12,7 @@ echo "============================"
 
 echo
 echo "--- Unit Tests ---"
+python -m venv venv
 pytest -v
 rc=$?
 results["Unit Tests"]=$rc
