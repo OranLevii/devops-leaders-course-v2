@@ -10,8 +10,7 @@ echo "============================"
 echo " Running full test suite"
 echo "============================"
 
-echo
-<<<<<<< HEAD
+
 echo "--- Unit Tests ---"
 python -m venv venv
 
