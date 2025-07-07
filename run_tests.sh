@@ -11,8 +11,10 @@ echo " Running full test suite"
 echo "============================"
 
 echo
+<<<<<<< HEAD
 echo "--- Unit Tests ---"
 python -m venv venv
+
 pytest -v
 rc=$?
 results["Unit Tests"]=$rc
